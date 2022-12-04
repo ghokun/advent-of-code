@@ -17,7 +17,7 @@ WITH game (alias_one, alias_two, hand_score, wins) AS (
     ('C', 'Z', 3, 'B')
 )
 SELECT
-      sum(CASE
+      SUM(CASE
             WHEN i.player_one = g.alias_one THEN 3
             WHEN i.player_one = g.wins      THEN 6
             ELSE 0
@@ -43,7 +43,7 @@ WITH hand_score (hand, score) AS (
     FROM hand_score hs
 )
 SELECT
-    sum (
+    SUM (
       CASE
         WHEN i.player_two = 'X' THEN wl.loss
         WHEN i.player_two = 'Y' THEN wl.score

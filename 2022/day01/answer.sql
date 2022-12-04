@@ -10,11 +10,11 @@ CREATE TABLE day01.input (
 
 -- part 1
 WITH elves AS (
-  SELECT NULLIF(calories, '')::int AS calories,
-         (sum(CASE WHEN calories = '' THEN 1 ELSE 0 END) OVER (ORDER BY id)) + 1 AS elf
+  SELECT NULLIF(calories, '')::INT AS calories,
+         (SUM(CASE WHEN calories = '' THEN 1 ELSE 0 END) OVER (ORDER BY id)) + 1 AS elf
     FROM day01.input
 )
-SELECT elf, sum(calories) AS total_calories
+SELECT elf, SUM(calories) AS total_calories
   FROM elves
  WHERE calories IS NOT NULL
  GROUP BY elf
@@ -23,13 +23,13 @@ SELECT elf, sum(calories) AS total_calories
 
 -- part 2
 WITH elves AS (
-  SELECT NULLIF(calories, '')::int AS calories,
-         (sum(CASE WHEN calories = '' THEN 1 ELSE 0 END) OVER (ORDER BY id)) + 1 AS elf
+  SELECT NULLIF(calories, '')::INT AS calories,
+         (SUM(CASE WHEN calories = '' THEN 1 ELSE 0 END) OVER (ORDER BY id)) + 1 AS elf
     FROM day01.input
 )
-SELECT sum(top_3.total_calories) AS top_3
+SELECT SUM(top_3.total_calories) AS top_3
   FROM (
-    SELECT sum(calories) AS total_calories
+    SELECT SUM(calories) AS total_calories
       FROM elves
     WHERE calories IS NOT NULL
     GROUP BY elf

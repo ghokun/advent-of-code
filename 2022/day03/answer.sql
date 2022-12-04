@@ -3,8 +3,8 @@ DROP EXTENSION IF EXISTS tablefunc;
 CREATE SCHEMA day03;
 
 CREATE TABLE day03.input (
-  id         SERIAL,
-  rucksack   TEXT NOT NULL
+  id       SERIAL,
+  rucksack TEXT NOT NULL
 );
 
 \COPY day03.input (rucksack) FROM '2022/day03/input.txt';
@@ -22,7 +22,7 @@ WITH compartments AS (
    GROUP BY c1.id, c1.comp1
 )
 SELECT 
-   sum(CASE
+   SUM(CASE
         WHEN ASCII(comp1) < 91 THEN ASCII(comp1) - 38
         WHEN ASCII(comp1) > 96 THEN ASCII(comp1) - 96
        END)
@@ -47,7 +47,7 @@ WITH rucksacks AS (
         $$) AS ct(_group INT, one TEXT ARRAY, two TEXT ARRAY, three TEXT ARRAY)
 )
 SELECT 
-   sum(CASE
+   SUM(CASE
         WHEN ASCII(badge) < 91 THEN ASCII(badge) - 38
         WHEN ASCII(badge) > 96 THEN ASCII(badge) - 96
        END)
