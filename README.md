@@ -1,13 +1,14 @@
-# Advent of Code Solutions in PostgreSQL
+## Advent of Code Solutions in PostgreSQL
 
 ```shell
-# start container
+# start or reset container
 make reset
 
 # jump to psql shell
 make
 
-# Run
+# run
 \i 2023/day01/answer.sql
 ```
-- <kbd>CTRL</kbd> + <kbd>D</kbd> to exit shell
+
+<kbd>CTRL</kbd> + <kbd>D</kbd> to exit shell
