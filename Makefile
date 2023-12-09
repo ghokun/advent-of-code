@@ -1,5 +1,5 @@
-.PHONY: shell
-shell:
+.PHONY: psql
+psql:
 	psql postgresql://postgres@localhost:9999/postgres
 
 .PHONY: reset
