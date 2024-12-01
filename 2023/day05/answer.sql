@@ -1,4 +1,4 @@
-DROP SCHEMA if EXISTS day05 CASCADE;
+DROP SCHEMA IF EXISTS day05 CASCADE;
 CREATE SCHEMA day05;
 
 CREATE TABLE day05.input (
@@ -6,20 +6,15 @@ CREATE TABLE day05.input (
   almanac TEXT NOT NULL
 );
 
-\
-COPY day05.input (almanac) FROM '2023/day05/sample.txt';
+\COPY day05.input (almanac) FROM '2023/day05/input.txt';
 
--- part 1
-CREATE TABLE day05.seeds AS (
-  SELECT unnest(regexp_matches(almanac, '\d+', 'g')) ::int AS seed
-    FROM day05.input
-   WHERE id = 1);
-
+-- common
 CREATE TABLE day05.almanac AS (
     WITH
       splits   AS (
         SELECT
-          row_number() AS over (ORDER BY m.id) AS idx, int4range(m.id + 2, COALESCE(lag(m.id, -1) over(ORDER BY m.id), e.id + 1)) AS window
+          ROW_NUMBER() OVER (ORDER BY m.id) AS idx,
+          INT4RANGE(m.id + 2, COALESCE(LAG(m.id, -1) OVER (ORDER BY m.id), e.id + 1)) AS window
           FROM (
                  SELECT id
                    FROM day05.input
@@ -30,15 +25,61 @@ CREATE TABLE day05.almanac AS (
       maps_raw AS (
         SELECT
           s.idx,
-          array(SELECT ARRAY_TO_STRING(REGEXP_MATCHES(i.almanac, '\d+', 'g'), ''))::int[] AS val
+          ARRAY(SELECT ARRAY_TO_STRING(REGEXP_MATCHES(i.almanac, '\d+', 'g'), ''))::INT8[] AS val
           FROM day05.input i, splits s
-         WHERE s.window @ > i.id)
+         WHERE s.window @> i.id)
   SELECT
     idx,
     val[1] AS destination,
-    int4range(val[2], val[2] + val[3]) AS source,
+    INT8RANGE(val[2], val[2] + val[3]) AS source,
+    val[1] - val[2] AS diff,
     val[3] AS range_length
     FROM maps_raw);
 
-SELECT *
-  FROM day05.almanac;
+-- part 1
+CREATE TABLE day05.seeds AS (
+  SELECT UNNEST(REGEXP_MATCHES(almanac, '\d+', 'g'))::INT8 AS seed
+    FROM day05.input
+   WHERE id = 1);
+
+  WITH
+    RECURSIVE
+    rec (seed, idx) AS (
+      SELECT seed, 1
+        FROM day05.seeds
+       UNION ALL
+      SELECT
+        r.seed + (
+          SELECT
+            CASE
+              WHEN EXISTS(
+                SELECT diff FROM day05.almanac a WHERE a.source @> r.seed AND r.idx = a.idx)
+                THEN (
+                SELECT diff FROM day05.almanac a WHERE a.source @> r.seed AND r.idx = a.idx)
+              ELSE 0
+            END), r.idx + 1
+        FROM rec r
+       WHERE r.idx <= (
+         SELECT DISTINCT(MAX(idx))
+           FROM day05.almanac))
+SELECT MIN(seed) AS part1
+  FROM rec
+ WHERE idx = (
+               SELECT DISTINCT(MAX(idx))
+                 FROM day05.almanac) + 1
+ GROUP BY idx;
+
+-- part 2
+CREATE TABLE day05.ranged_seeds AS (
+    WITH
+      raw_seed AS (
+        SELECT UNNEST(REGEXP_MATCHES(almanac, '\d+ \d+', 'g')) AS seed
+          FROM day05.input
+         WHERE id = 1)
+  SELECT
+    SPLIT_PART(seed, ' ', 1)::INT8 AS start,
+    SPLIT_PART(seed, ' ', 2)::INT8 AS length
+    FROM raw_seed);
+
+SELECT INT8RANGE(ranged_seeds.start, ranged_seeds.start + ranged_seeds.length)
+  FROM day05.ranged_seeds;

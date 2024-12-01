@@ -57,13 +57,14 @@ CREATE TABLE day04.scratch AS (
    ORDER BY iter);
 
   WITH
-    RECURSIVE rec (scratch) AS (
-    SELECT scratch
-      FROM day04.scratch
-     UNION ALL
-    SELECT s.scratch
-      FROM day04.scratch s
-      JOIN rec r ON s.iter = r.scratch)
+    RECURSIVE
+    rec (scratch) AS (
+      SELECT scratch
+        FROM day04.scratch
+       UNION ALL
+      SELECT s.scratch
+        FROM day04.scratch s
+        JOIN rec r ON s.iter = r.scratch)
 SELECT c1.count + c2.count AS part2
   FROM (
          SELECT COUNT(*)
