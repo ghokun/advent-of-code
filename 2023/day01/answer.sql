@@ -1,18 +1,18 @@
-DROP SCHEMA IF EXISTS day01 CASCADE;
-CREATE SCHEMA day01;
+DROP SCHEMA IF EXISTS _202301 CASCADE;
+CREATE SCHEMA _202301;
 
-CREATE TABLE day01.input (
+CREATE TABLE _202301.input (
   id          SERIAL,
   calibration TEXT NOT NULL
 );
 
-\COPY day01.input (calibration) FROM '2023/day01/input.txt';
+\COPY _202301.input (calibration) FROM '2023/_202301/input.txt';
 
 -- part 1
   WITH
     calibration_values AS (
       SELECT ARRAY(SELECT ARRAY_TO_STRING(REGEXP_MATCHES(calibration, '\d', 'g'), '')) AS digit
-        FROM day01.input)
+        FROM _202301.input)
 SELECT SUM(CAST(digit[1] || digit[ARRAY_UPPER(digit, 1)] AS INT))
   FROM calibration_values;
 
@@ -24,7 +24,7 @@ SELECT SUM(CAST(digit[1] || digit[ARRAY_UPPER(digit, 1)] AS INT))
           ARRAY_TO_STRING(
           REGEXP_MATCHES(calibration, '((?=\d)\w|(?=(one|two|three|four|five|six|seven|eight|nine))\w{2})', 'g'),
           '')) AS digit, calibration
-        FROM day01.input)
+        FROM _202301.input)
 SELECT
   SUM(CAST((CASE digit[1]
               WHEN 'on' THEN '1'

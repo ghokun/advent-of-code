@@ -1,12 +1,12 @@
-DROP SCHEMA IF EXISTS day04 CASCADE;
-CREATE SCHEMA day04;
+DROP SCHEMA IF EXISTS _202304 CASCADE;
+CREATE SCHEMA _202304;
 
-CREATE TABLE day04.input (
+CREATE TABLE _202304.input (
   id    SERIAL,
   cards TEXT NOT NULL
 );
 
-\COPY day04.input (cards) FROM '2023/day04/input.txt';
+\COPY _202304.input (cards) FROM '2023/_202304/input.txt';
 
 -- part 1
   WITH
@@ -16,7 +16,7 @@ CREATE TABLE day04.input (
         STRING_TO_ARRAY(a[2], '|') AS cards
         FROM (
           SELECT STRING_TO_ARRAY(cards, ':')
-            FROM day04.input) AS arr(a)),
+            FROM _202304.input) AS arr(a)),
     hand   AS (
       SELECT
         iter,
@@ -32,7 +32,7 @@ SELECT SUM(POWER(2, c - 1))
   FROM result;
 
 -- part 2
-CREATE TABLE day04.scratch AS (
+CREATE TABLE _202304.scratch AS (
     WITH
       game   AS (
         SELECT
@@ -40,7 +40,7 @@ CREATE TABLE day04.scratch AS (
           STRING_TO_ARRAY(a[2], '|') AS cards
           FROM (
             SELECT STRING_TO_ARRAY(cards, ':')
-              FROM day04.input) AS arr(a)),
+              FROM _202304.input) AS arr(a)),
       hand   AS (
         SELECT
           iter,
@@ -60,10 +60,10 @@ CREATE TABLE day04.scratch AS (
     RECURSIVE
     rec (scratch) AS (
       SELECT scratch
-        FROM day04.scratch
+        FROM _202304.scratch
        UNION ALL
       SELECT s.scratch
-        FROM day04.scratch s
+        FROM _202304.scratch s
         JOIN rec r ON s.iter = r.scratch)
 SELECT c1.count + c2.count AS part2
   FROM (
@@ -71,4 +71,4 @@ SELECT c1.count + c2.count AS part2
            FROM rec) AS c1,
        (
          SELECT COUNT(*)
-           FROM day04.input) AS c2;
+           FROM _202304.input) AS c2;

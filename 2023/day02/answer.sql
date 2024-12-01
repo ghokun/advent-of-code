@@ -1,12 +1,12 @@
-DROP SCHEMA IF EXISTS day02 CASCADE;
-CREATE SCHEMA day02;
+DROP SCHEMA IF EXISTS _202302 CASCADE;
+CREATE SCHEMA _202302;
 
-CREATE TABLE day02.input (
+CREATE TABLE _202302.input (
   id   SERIAL,
   game TEXT NOT NULL
 );
 
-\COPY day02.input (game) FROM '2023/day02/input.txt';
+\COPY _202302.input (game) FROM '2023/_202302/input.txt';
 
 -- part 1 & 2
   WITH
@@ -16,7 +16,7 @@ CREATE TABLE day02.input (
         UNNEST(STRING_TO_ARRAY(a[2], ';')) AS pick
         FROM (
           SELECT STRING_TO_ARRAY(game, ':')
-            FROM day02.input) AS arr(a)),
+            FROM _202302.input) AS arr(a)),
     cubes (iter, red, blue, green) AS (
       SELECT
         iter,

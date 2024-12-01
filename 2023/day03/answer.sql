@@ -1,18 +1,18 @@
-DROP SCHEMA IF EXISTS day03 CASCADE;
-CREATE SCHEMA day03;
+DROP SCHEMA IF EXISTS _202303 CASCADE;
+CREATE SCHEMA _202303;
 
-CREATE TABLE day03.input (
+CREATE TABLE _202303.input (
   id     SERIAL,
   engine TEXT NOT NULL
 );
 
-\COPY day03.input (engine) FROM '2023/day03/input.txt';
+\COPY _202303.input (engine) FROM '2023/_202303/input.txt';
 
 -- part 1
   WITH
     colsize     AS (
       SELECT DISTINCT(LENGTH(engine)) AS val
-        FROM day03.input),
+        FROM _202303.input),
     numbers     AS (
       SELECT
         generate_series AS size,
@@ -23,7 +23,7 @@ CREATE TABLE day03.input (
           GENERATE_SERIES(1, colsize.val)),
     joined      AS (
       SELECT STRING_AGG(engine, '') AS engine
-        FROM day03.input),
+        FROM _202303.input),
     nonadjacent AS (
       SELECT
         UNNEST(REGEXP_MATCHES(engine,
@@ -46,10 +46,10 @@ SELECT sum1.val - sum2.val AS part1
   WITH
     colsize    AS (
       SELECT DISTINCT(LENGTH(engine)) AS val
-        FROM day03.input),
+        FROM _202303.input),
     joined     AS (
       SELECT STRING_AGG(engine, '') AS engine
-        FROM day03.input),
+        FROM _202303.input),
     stars      AS (
       SELECT a.nr AS index, LENGTH(a.elem) + 1 AS pos
         FROM joined AS g
