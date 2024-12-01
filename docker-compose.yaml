@@ -1,7 +1,7 @@
 name: advent-of-code
 services:
   postgres:
-    image: 'postgres:16'
+    image: 'postgres:17'
     ports:
       - '9999:5432'
     environment:
